@@ -1,0 +1,194 @@
+<ngx-spinner type="ball-scale-multiple"></ngx-spinner>
+
+<nav class="navbar navbar-expand-lg" style="background-color: #4633af;">
+  <div class="container-fluid">
+    <a class="navbar-brand" style="color: #fff;">Phones Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+  </div>
+</nav>
+<div class="alert alert-warning alert-dismissible fade show" role="alert" *ngIf="showAlert">
+  <div>
+
+    <strong>Mappped Done </strong>
+
+  </div>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="showAlert=false" style="    background: transparent;
+  border: none;">
+    <span aria-hidden="true">&times;</span></button>
+
+
+</div>
+<div class="container">
+  <div class="row mt-4">
+    <div class="col-md-2" style="margin: 0 0 0 8px; display: flex;">
+      <label style="width: 100%; font-weight: 500;">UnMapped Phones</label>
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" #phoneTitle placeholder="Enter keyword here" (change)="getFotoFondo()">
+
+    </div>
+    <div class="col-md-2">
+      <button class="btn" style="background-color: #00c9db; color:#fff" (click)="getFotoFondo()">Search</button>
+    </div>
+  </div>
+
+  <table class="table table-bordered unMapped-phones  "
+    *ngIf=" general.unMapppedPhones &&  general.unMapppedPhones.length>0">
+    <thead>
+      <tr>
+        <th scope="col">
+          <input type="checkbox" value="Select All" (click)="checkUncheckAll($event)" [checked]="isSelectAll">
+        </th>
+        <th scope="col">Title</th>
+        <th scope="col">Price</th>
+        <th scope="col">Website</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let phone of general.unMapppedPhones">
+        <th scope="row">
+          <input type="checkbox" value="{{phone.id}} " [checked]="phone.isSelected"
+            (change)="collectMappedPhone($event ,phone.id)" />
+        </th>
+        <td>{{phone.title}}</td>
+        <td>{{phone.price}}</td>
+        <td>{{phone.website}}</td>
+      </tr>
+
+    </tbody>
+  </table>
+  <div class="row" *ngIf="general.brands&&general.brands.length>0">
+    <hr>
+    <label class="col-md-2" style="margin: 0 0 0 8px; font-weight: 500;">Choose Brand :</label>
+    <div class="col-md-4">
+      <select class="select-dropdown" (change)="getPhonesByBrand($event)">
+        <option value="1">Brands</option>
+        <option value="{{brand.id}}" *ngFor="let brand of general.brands">{{brand.name}}</option>
+      </select>
+    </div>
+
+  </div>
+
+  <ng-container *ngIf="general.phones&&general.phones.length>0">
+
+
+    <div class="row" style="margin-top: 10px;">
+      <label class="col-md-2" style="margin: 0 0 0 8px; font-weight: 500;">Choose Phone :</label>
+      <div class="col-md-4">
+        <select class="select-dropdown" (change)="getPhoneDetails($event)">
+          <option value="1">Phones</option>
+          <option value="{{phone.id}}" *ngFor="let phone of general.phones">{{phone.title}}</option>
+        </select>
+      </div>
+
+    </div>
+
+    <div class="row mt-4">
+      <label class="col-md-2" style="margin: 0 0 0 8px; font-weight: 500;">Enter Keyword :</label>
+      <div class="col-md-3">
+        <input type="text" class="form-control" #phoneName placeholder="keyword" (change)="getPhoneName()">
+      </div>
+
+      <div class="col-md-2">
+        <button class="btn" style="background-color: #00c9db; color:#fff" (click)="getPhoneName()">Search</button>
+      </div>
+
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf=" general.filteredPhones &&  general.filteredPhones.length>0">
+    <h3 class="mt-5 mb-3" style="color:#4633af"> Filtered Phones</h3>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th scope="col">Title</th>
+          <th scope="col">Ram</th>
+          <th scope="col">Storage</th>
+          <th scope="col">DisplaySize</th>
+          <th scope="col">BatterySize</th>
+          <th scope="col">Variants</th>
+          <th scope="col">Add variant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let phone of general.filteredPhones">
+          <td>{{phone.title}}</td>
+          <td>{{phone.ram}}</td>
+          <td>{{phone.storage}}</td>
+          <td>{{phone.displaySize}}</td>
+          <td>{{phone.batterySize}}</td>
+          <td>
+            <p *ngFor="let variant of phone.variants">
+              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1"
+                value="{{variant.id}}" (change)="getVariantId($event)">
+              {{variant.color}} , {{variant.size}}
+            </p>
+          </td>
+
+
+          <!-- Button trigger modal -->
+          <td>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+              (click)="addVariant(phone.id)">
+              Create Variant
+            </button>
+          </td>
+
+
+
+          <!-- <button class="btn" style="background-color: #00c9db; color:#fff" (click)="addVariant(phone.id)">Add Variant</button> -->
+
+
+
+        </tr>
+
+
+
+      </tbody>
+    </table>
+    <div style="display: flex; justify-content:center ; margin: 35px 0    ;">
+      <button class="btn btn-success" (click)="MapPhones()">Map Phones</button>
+
+    </div>
+
+  </ng-container>
+
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{variantFor}}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" #myModalClose></button>
+      </div>
+      <form #variant="ngForm" (ngSubmit)="onSubmit(variant.value)">
+        <div class="modal-body">
+          <div>
+            <label style="margin: 0 0 0 8px; font-weight: 500;">Phone Size :</label>
+            <div>
+              <input type="text" class="form-control" #size placeholder="enter size" name="size" ngModel>
+            </div>
+          </div>
+          <div>
+            <label style="margin: 0 0 0 8px; font-weight: 500;">Phone Color :</label>
+            <div>
+              <input type="text" class="form-control" #color placeholder="enter color" name="color" ngModel>
+            </div>
+          </div>
+
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Create</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
